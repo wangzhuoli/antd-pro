@@ -25,36 +25,43 @@
             routes: [
               {
                 path: '/',
-                redirect: '/welcome',
+                redirect: '/home',
+              },
+              
+              {
+                path: '/home',
+                name: '首页',
+                icon: 'home',
+                component: './Home',
               },
               {
-                path: '/welcome',
-                name: 'welcome',
-                icon: 'smile',
-                component: './Welcome',
+                path: '/staffs',
+                name: '会员',
+                icon: 'user',
+                component: './Staffs',
               },
-              {
-                path: '/admin',
-                name: 'admin',
-                icon: 'crown',
-                component: './Admin',
-                authority: ['admin'],
-                routes: [
-                  {
-                    path: '/admin/sub-page',
-                    name: 'sub-page',
-                    icon: 'smile',
-                    component: './Welcome',
-                    authority: ['admin'],
-                  },
-                ],
-              },
-              {
-                name: 'list.table-list',
-                icon: 'table',
-                path: '/list',
-                component: './TableList',
-              },
+              // {
+              //   path: '/admin',
+              //   name: 'admin',
+              //   icon: 'crown',
+              //   component: './Admin',
+              //   authority: ['admin'],
+              //   routes: [
+              //     {
+              //       path: '/admin/sub-page',
+              //       name: 'sub-page',
+              //       icon: 'smile',
+              //       component: './Welcome',
+              //       authority: ['admin'],
+              //     },
+              //   ],
+              // },
+              // {
+              //   name: 'list.table-list',
+              //   icon: 'table',
+              //   path: '/list',
+              //   component: './TableList',
+              // },
               {
                 component: './404',
               },

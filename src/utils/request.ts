@@ -3,7 +3,9 @@
  * 更详细的 api 文档: https://github.com/umijs/umi-request
  */
 import { extend } from 'umi-request';
-import { notification } from 'antd';
+import { notification, message } from 'antd';
+import { history } from 'umi';
+import Token from '@/utils/token';
 
 const codeMessage = {
   200: '服务器成功返回请求的数据。',
@@ -52,5 +54,32 @@ const request = extend({
   errorHandler, // 默认错误处理
   credentials: 'include', // 默认请求是否带上cookie
 });
+
+request.interceptors.request.use( (url, options) => {  // 此处为拦截器，每次发送请求之前判断能否取到token
+  const token = Token.getToken();
+  const headers = {
+    Accept: 'application/prs.zw-wealth-php.v1+json',
+    Authorization: `Bearer ${token}`
+  };
+  return {
+    url,
+    options: { ...options, headers },
+  };
+});
+
+request.interceptors.response.use(async response => {
+  const { message: errorMessage, error_code } = await response.clone().json();
+  if (errorMessage) {
+    // 存在错误信息，提示用户
+    message.error(errorMessage)
+  }
+  if (error_code === 'f00002') {
+    // token过期跳转至登陆页
+    history.push('/user/login')
+  }
+  return response
+});
+
+
 
 export default request;

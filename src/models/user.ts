@@ -1,35 +1,31 @@
 import type { Effect, Reducer } from 'umi';
-
-import { queryCurrent, query as queryUsers } from '@/services/user';
+import { getCurrentUser } from '@/services/user'; 
 
 export type CurrentUser = {
   avatar?: string;
-  name?: string;
-  title?: string;
-  group?: string;
-  signature?: string;
-  tags?: {
-    key: string;
-    label: string;
-  }[];
-  userid?: string;
-  unreadCount?: number;
+  gender?: 0 | 1;
+  nickname?: string;
+  role?: string;
+  uid?: string;
+  username?: string;
 };
 
 export type UserModelState = {
-  currentUser?: CurrentUser;
+  auth: {
+    permissions: null | string[];
+    roles: null | string[];
+  };
+  user: CurrentUser;
 };
 
 export type UserModelType = {
   namespace: 'user';
   state: UserModelState;
   effects: {
-    fetch: Effect;
     fetchCurrent: Effect;
   };
   reducers: {
     saveCurrentUser: Reducer<UserModelState>;
-    changeNotifyCount: Reducer<UserModelState>;
   };
 };
 
@@ -37,49 +33,33 @@ const UserModel: UserModelType = {
   namespace: 'user',
 
   state: {
-    currentUser: {},
+    auth: {
+      permissions: null,
+      roles: null
+    },
+    user: {},
   },
 
   effects: {
-    *fetch(_, { call, put }) {
-      const response = yield call(queryUsers);
-      yield put({
-        type: 'save',
-        payload: response,
-      });
-    },
     *fetchCurrent(_, { call, put }) {
-      const response = yield call(queryCurrent);
-      yield put({
-        type: 'saveCurrentUser',
-        payload: response,
-      });
+      const { data } = yield call(getCurrentUser);
+      if (data) {
+        yield put({
+          type: 'saveCurrentUser',
+          payload: data,
+        });
+       }
     },
   },
-
   reducers: {
-    saveCurrentUser(state, action) {
+    saveCurrentUser(_, { payload }) {
+      const { auth, user } = payload
       return {
-        ...state,
-        currentUser: action.payload || {},
+        auth,
+        user
       };
-    },
-    changeNotifyCount(
-      state = {
-        currentUser: {},
-      },
-      action,
-    ) {
-      return {
-        ...state,
-        currentUser: {
-          ...state.currentUser,
-          notifyCount: action.payload.totalCount,
-          unreadCount: action.payload.unreadCount,
-        },
-      };
-    },
-  },
+    }
+  }
 };
 
 export default UserModel;

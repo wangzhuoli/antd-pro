@@ -1,8 +1,8 @@
 import { stringify } from 'querystring';
 import type { Reducer, Effect } from 'umi';
 import { history } from 'umi';
-
-import { fakeAccountLogin } from '@/services/login';
+import Token from '@/utils/token';
+import { login } from '@/services/login';
 import { setAuthority } from '@/utils/authority';
 import { getPageQuery } from '@/utils/utils';
 import { message } from 'antd';
@@ -33,14 +33,11 @@ const Model: LoginModelType = {
   },
 
   effects: {
-    *login({ payload }, { call, put }) {
-      const response = yield call(fakeAccountLogin, payload);
-      yield put({
-        type: 'changeLoginStatus',
-        payload: response,
-      });
-      // Login successfully
-      if (response.status === 'ok') {
+    *login({ payload }, { call }) {
+      const { data } = yield call(login, payload);
+      if (data) {
+        const { token } = data;
+        Token.setToken(token);
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
         message.success('🎉 🎉 🎉  登录成功！');
@@ -58,10 +55,10 @@ const Model: LoginModelType = {
           }
         }
         history.replace(redirect || '/');
-      }
+       }
     },
-
     logout() {
+      Token.removeToken();
       const { redirect } = getPageQuery();
       // Note: There may be security issues, please note
       if (window.location.pathname !== '/user/login' && !redirect) {

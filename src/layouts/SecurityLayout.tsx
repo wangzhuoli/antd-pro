@@ -37,7 +37,7 @@ class SecurityLayout extends React.Component<SecurityLayoutProps, SecurityLayout
     const { children, loading, currentUser } = this.props;
     // You can replace it to your authentication rule (such as check token exists)
     // 你可以把它替换成你自己的登录认证规则（比如判断 token 是否存在）
-    const isLogin = currentUser && currentUser.userid;
+    const isLogin = currentUser && currentUser.uid;
     const queryString = stringify({
       redirect: window.location.href,
     });
@@ -52,7 +52,9 @@ class SecurityLayout extends React.Component<SecurityLayoutProps, SecurityLayout
   }
 }
 
-export default connect(({ user, loading }: ConnectState) => ({
-  currentUser: user.currentUser,
-  loading: loading.models.user,
-}))(SecurityLayout);
+export default connect(({ user, loading }: ConnectState) => {
+  return {
+    currentUser: user?.user,
+    loading: loading.models.user,
+  };
+})(SecurityLayout);
