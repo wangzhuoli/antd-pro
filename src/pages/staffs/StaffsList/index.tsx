@@ -6,12 +6,15 @@ import { Button, Badge, Form, Input } from 'antd';
 import DelPopconfirm from '@/components/DelPopconfirm';
 import { membert_status } from '@/utils/constants';
 import BasicImg from '@/components/BasicImg';
+import { history } from 'umi';
+import ContentWrapper from '@/components/ContentWrapper';
 
 export type TableListItem = {
   username: string;
   avatar?: string;
   realname: string;
   status: 0 | -1;
+  uid: string;
 };
 
 type AccountParams = {
@@ -20,7 +23,13 @@ type AccountParams = {
   last_login_ip: string;
 };
 
-const handleAdd = () => {};
+const handleAdd = () => {
+  history.push('/staffs/add');
+};
+
+const handleEdit = (id: string) => {
+  history.push(`/staffs/edit/${id}`);
+};
 
 const beforeNode = (
   <Button type="primary" onClick={handleAdd}>
@@ -79,26 +88,28 @@ export default () => {
     },
     {
       title: '操作',
-      dataIndex: 'id',
-      render: (text, record) => {
+      dataIndex: 'uid',
+      render: (text) => {
         return (
           <React.Fragment>
-            <Button type="primary" key="edit">
+            <Button type="primary" key="edit" onClick={() => handleEdit(text)}>
               编辑
             </Button>
-            <DelPopconfirm onConfirm={() => handleDel(record.uid)} />
+            <DelPopconfirm onConfirm={() => handleDel(text)} />
           </React.Fragment>
         );
       },
     },
   ];
   return (
-    <BasicTable
-      form={form}
-      request={getStaffsList}
-      columns={columns}
-      beforeNode={beforeNode}
-      simpleNode={simpleNode}
-    />
+    <ContentWrapper>
+      <BasicTable
+        form={form}
+        request={getStaffsList}
+        columns={columns}
+        beforeNode={beforeNode}
+        simpleNode={simpleNode}
+      />
+    </ContentWrapper>
   );
 };

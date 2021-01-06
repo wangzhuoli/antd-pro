@@ -70,7 +70,7 @@ request.interceptors.request.use( (url, options) => {  // 此处为拦截器，�
 request.interceptors.response.use(async response => {
   const { message: errorMessage, error_code } = await response.clone().json();
   if (errorMessage) {
-    // 存在错误信息，提示用户
+    // 存在错误信息，提示
     message.error(errorMessage)
   }
   if (error_code === 'f00002') {
