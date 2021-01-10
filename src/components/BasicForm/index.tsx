@@ -18,8 +18,11 @@ type BasicFormProps = {
 
 const BasicForm: React.FC<BasicFormProps> = (props) => {
   const { getRequest, updateRequest, createRequest, id, children, ...rest } = props;
+  const onFinish = (values: any) => {
+    console.log(values);
+  };
   return (
-    <Form {...layout} name="basic" {...rest}>
+    <Form {...layout} name="basic" {...rest} onFinish={onFinish}>
       {children}
       <Form.Item {...tailLayout}>
         <Space>
