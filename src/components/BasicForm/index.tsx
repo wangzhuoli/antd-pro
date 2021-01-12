@@ -1,5 +1,7 @@
-import React from 'react';
-import { Form, Button, Space } from 'antd';
+import React, { useEffect, useMemo } from 'react';
+import { Form, Button, Space, message } from 'antd';
+import { history } from 'umi';
+import { useRequest, useLockFn } from 'ahooks';
 
 const layout = {
   labelCol: { span: 6 },
@@ -17,12 +19,49 @@ type BasicFormProps = {
 };
 
 const BasicForm: React.FC<BasicFormProps> = (props) => {
+  const [form] = Form.useForm();
   const { getRequest, updateRequest, createRequest, id, children, ...rest } = props;
-  const onFinish = (values: any) => {
-    console.log(values);
-  };
+
+  const { data, loading, run } = useRequest(getRequest, {
+    manual: true,
+    formatResult: (data) => data.data,
+  });
+
+  const saveRequest = useMemo(() => {
+    if (id && updateRequest) {
+      return updateRequest;
+    }
+    if (createRequest) {
+      return createRequest;
+    }
+    return () => {};
+  }, [updateRequest, createRequest]);
+
+  useEffect(() => {
+    if (id && getRequest) {
+      run(id);
+    }
+  }, [id]);
+
+  useEffect(() => {
+    if (data) {
+      form.setFieldsValue(data);
+    }
+  }, [data]);
+
+  const onFinish = useLockFn(async (value) => {
+    if (id) {
+      value.id = id;
+    }
+    const { error } = await saveRequest(value);
+    if (!error) {
+      message.success(id ? '修改成功' : '添加成功');
+      history.goBack();
+    }
+  });
+
   return (
-    <Form {...layout} name="basic" {...rest} onFinish={onFinish}>
+    <Form {...layout} name="basic" onFinish={onFinish} {...rest} form={form}>
       {children}
       <Form.Item {...tailLayout}>
         <Space>
