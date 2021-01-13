@@ -50,6 +50,8 @@ const BasicForm: React.FC<BasicFormProps> = (props) => {
   }, [data]);
 
   const onFinish = useLockFn(async (value) => {
+    return console.log(value);
+
     if (id) {
       value.id = id;
     }

@@ -7,6 +7,7 @@ import UploadImage from '@/components/UploadImage';
 import { createStaffs, getStaffsDetails, updateStaffs } from '@/services/staffs';
 import { getAllRolesList } from '@/services/system';
 import { useParams } from 'umi';
+import Editor from '@/components/Editor';
 
 const rules = {
   username: [{ required: true, message: '请填写用户名' }],
@@ -68,6 +69,9 @@ export default () => {
             <Radio value={0}>启用</Radio>
             <Radio value={-1}>停用</Radio>
           </Radio.Group>
+        </Form.Item>
+        <Form.Item label="富文本" name="content">
+          <Editor />
         </Form.Item>
       </BasicForm>
     </ContentWrapper>
