@@ -9,16 +9,7 @@ import { getAliOssPolicy } from '@/services/ali';
 
 const Editor = (props: any) => {
   const { value, onChange } = props;
-  const [OSSData, setOSSData] = useState<any>({});
   const [editorValue, setEditorValue] = useState(BraftEditor.createEditorState(null));
-
-  // 初始化oss上传需要数据
-  const initOssData = async () => {
-    const { data, error } = await getAliOssPolicy({ dir: 'other' });
-    if (!error) {
-      setOSSData(data);
-    }
-  };
 
   useMount(() => {
     // initOssData();

@@ -21,7 +21,7 @@
           {
             path: '/',
             component: '../layouts/BasicLayout',
-            authority: ['admin', 'user'],
+            authority: ['admin'],
             routes: [
               {
                 path: '/',
@@ -38,6 +38,7 @@
                 path: '/staffs',
                 name: '用户管理',
                 icon: 'user',
+                authority: ['admin'],
                 routes: [
                   {
                     path: '/staffs/list',

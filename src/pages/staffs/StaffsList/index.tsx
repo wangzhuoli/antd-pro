@@ -102,7 +102,7 @@ export default () => {
     },
   ];
   return (
-    <ContentWrapper>
+    <ContentWrapper authority={['admin']}>
       <BasicTable
         form={form}
         request={getStaffsList}

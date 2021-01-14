@@ -1,5 +1,6 @@
 import type { Effect, Reducer } from 'umi';
 import { getCurrentUser } from '@/services/user'; 
+import { setAuthority} from '@/utils/authority'
 
 export type CurrentUser = {
   avatar?: string;
@@ -29,6 +30,14 @@ export type UserModelType = {
   };
 };
 
+function getAuthoritys(auth) {
+  const { permissions = [], roles = [] } = auth;
+  if (roles.includes('admin') || roles.includes('super-admin')) { 
+    return ['admin']
+  }
+  return permissions
+ }
+
 const UserModel: UserModelType = {
   namespace: 'user',
 
@@ -44,6 +53,9 @@ const UserModel: UserModelType = {
     *fetchCurrent(_, { call, put }) {
       const { data } = yield call(getCurrentUser);
       if (data) {
+      const authoritys = getAuthoritys(data.auth)
+      setAuthority(authoritys)
+        
         yield put({
           type: 'saveCurrentUser',
           payload: data,
